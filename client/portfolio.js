@@ -167,8 +167,8 @@ document.addEventListener('DOMContentLoaded', () =>
     .then(setCurrentProducts)
     .then(() => render(currentProducts, currentPagination))
 );
-
-// Feature 3
+// Feature 
+// Feature 3,4,5 and 6
 
 function SortChoice(currentProducts,selecSort){
   if (selectSort.value == 'date-desc')
@@ -179,8 +179,32 @@ function SortChoice(currentProducts,selecSort){
     SortPrice(currentProducts,'desc');
   if (selectSort.value == 'price-desc')
     SortPrice(currentProducts,'asc');
+  if (selectSort.value == 'affordable')
+    SortAffordable(currentProducts);
+  if (selectSort.value == 'new-released')
+    SortRecent(currentProducts);
 }
 
+function SortAffordable(currentProducts){
+  let affordableproducts = [];
+  for(let i = 0; i < currentProducts.length; i++){
+    if(currentProducts[i].price < 50){
+      affordableproducts.push(currentProducts[i]);
+    }
+  }
+  filterBrands(affordableproducts, selectBrands.value);
+}
+function SortRecent(currentProducts){
+  var date = new Date();
+  let RecentProducts = [];
+  for(let i = 0; i < currentProducts.length; i++){
+    var DateProduct = new Date(currentProducts[i].released);
+    if(date - DateProduct< 86400*15000){
+      RecentProducts.push(currentProducts[i]);
+    }
+  }
+  filterBrands(RecentProducts, selectBrands.value);
+}
 function compareDatedesc(a,b){
   if(a.released < b.released)
    return -1;
