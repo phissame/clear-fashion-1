@@ -10,7 +10,9 @@ const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
-
+const selectBrand = document.querySelector('#brand-select');
+const ALLbrandlist = currentProducts.map(product => product.brand);
+const brandlist = ALLbrandlist.filter(brand => brandlist.includes(brand));
 /**
  * Set global value
  * @param {Array} result - products to display
@@ -75,6 +77,7 @@ const renderProducts = products => {
  * Render page selector
  * @param  {Object} pagination
  */
+
 const renderPagination = pagination => {
   const {currentPage, pageCount} = pagination;
   const options = Array.from(
@@ -115,7 +118,11 @@ selectShow.addEventListener('change', event => {
     .then(setCurrentProducts)
     .then(() => render(currentProducts, currentPagination));
 });
-
+selectPage.addEventListener('change', event => {
+  fetchProducts(parseInt(event.target.value), currentProducts.length)
+    .then(setCurrentProducts)
+    .then(() => render(currentProducts, currentPagination));
+});
 document.addEventListener('DOMContentLoaded', () =>
   fetchProducts()
     .then(setCurrentProducts)
