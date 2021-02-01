@@ -12,6 +12,7 @@ const selectBrands = document.querySelector('#brand-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
 const selectSort = document.querySelector('#sort-select');
+const NbProducts = document.querySelector('#nbProducts');
 /**
  * Set global value
  * @param {Array} result - products to display
@@ -159,7 +160,7 @@ selectPage.addEventListener('change', event => {
 //Feature 2
 
 selectBrands.addEventListener('change', event => {
-    (filterBrands(currentProducts, selectBrands.value));
+    (SortChoice(currentProducts, selectSort.value));
 });
 
 document.addEventListener('DOMContentLoaded', () =>
@@ -262,4 +263,7 @@ function SortPrice(currentProducts,type){
 selectSort.addEventListener('change', event => {
   SortChoice(currentProducts, event.target.value);
 });
+
+//Feature 8
+
 
