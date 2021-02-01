@@ -11,7 +11,7 @@ const selectPage = document.querySelector('#page-select');
 const selectBrands = document.querySelector('#brand-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
-
+const selectSort = document.querySelector('#sort-select');
 /**
  * Set global value
  * @param {Array} result - products to display
@@ -90,8 +90,7 @@ const renderBrands = currentProducts => {
 }
 
 function filterBrands(currentProducts, filterBrand){
-  console.log("this is filterBrand : " + filterBrand);
-  if(filterBrand != 'all'){
+  if(filterBrand != 'All'){
     let filteredProducts = [];
     for(let i = 0; i < currentProducts.length; i++){
       if(currentProducts[i].brand == filterBrand){
@@ -99,7 +98,9 @@ function filterBrands(currentProducts, filterBrand){
       }
     }
     renderProducts(filteredProducts);
-  }  
+  }else {
+    renderProducts(currentProducts);
+  } 
 }
 
 /**
@@ -156,7 +157,7 @@ selectPage.addEventListener('change', event => {
 });
 
 //Feature 2
-//POURQUOI EVENT.TARGET.VALUE N'A PAS MARCHE !!!!!!
+
 selectBrands.addEventListener('change', event => {
     (filterBrands(currentProducts, selectBrands.value));
 });
@@ -166,3 +167,75 @@ document.addEventListener('DOMContentLoaded', () =>
     .then(setCurrentProducts)
     .then(() => render(currentProducts, currentPagination))
 );
+
+// Feature 3
+
+function SortChoice(currentProducts,selecSort){
+  if (selectSort.value == 'date-desc')
+   SortDate(currentProducts,'desc');
+  if (selectSort.value == 'date-asc')
+    SortDate(currentProducts,'asc');
+  if (selectSort.value == 'price-asc')
+    SortPrice(currentProducts,'desc');
+  if (selectSort.value == 'price-desc')
+    SortPrice(currentProducts,'asc');
+}
+
+function compareDatedesc(a,b){
+  if(a.released < b.released)
+   return -1;
+  if(a.released > b.released)
+   return 1;
+  return 0;
+}
+function compareDateasc(a,b){
+  if(a.released < b.released)
+   return 1;
+  if(a.released > b.released)
+   return -1;
+  return 0;
+}
+function comparePricedesc(a,b){
+  if(a.price < b.price)
+   return -1;
+  if(a.price > b.price)
+   return 1;
+  return 0;
+}
+function comparePriceasc(a,b){
+  if(a.price < b.price)
+   return 1;
+  if(a.price > b.price)
+   return -1;
+  return 0;
+}
+
+function SortDate(currentProducts,type){
+  if(type == 'desc'){
+    let sortedProducts = currentProducts.sort(compareDatedesc);
+    filterBrands(sortedProducts,selectBrands.value);
+  }
+
+  else{
+    let sortedProducts = currentProducts.sort(compareDateasc);
+    filterBrands(sortedProducts,selectBrands.value);
+  }
+
+
+}
+function SortPrice(currentProducts,type){
+  if(type == 'desc'){
+    let sortedProducts = currentProducts.sort(comparePricedesc);
+    filterBrands(sortedProducts,selectBrands.value);
+  }
+  else{
+    let sortedProducts = currentProducts.sort(comparePriceasc);
+    filterBrands(sortedProducts,selectBrands.value);
+  }
+
+}
+
+selectSort.addEventListener('change', event => {
+  SortChoice(currentProducts, event.target.value);
+});
+
