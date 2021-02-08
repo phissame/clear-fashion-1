@@ -20,9 +20,11 @@ const parse = data => {
         $(element)
           .find('.productList-price')
           .text()
+      
+      
       );
 
-      return {name, price};
+      return {name, price };
     })
     .get();
 };
@@ -45,7 +47,7 @@ module.exports.scrape_products = async url => {
   return null;
 };
 
-//Scrape all links on the welcome page of the website
+ //Scrape all links on the welcome page of the website
 module.exports.scrape_links = async url => {
   const response = await axios(url);
   const {data, status} = response;
@@ -72,4 +74,4 @@ const parse_links = data => {
       return link;
     })
     .get();
-};
+}; 

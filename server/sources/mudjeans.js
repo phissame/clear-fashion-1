@@ -35,7 +35,7 @@ const parse = data => {
  * @param  {[type]}  url
  * @return {Array|null}
  */
-module.exports.scrape = async url => {
+module.exports.scrape_products = async url => {
   const response = await axios(url);
   const {data, status} = response;
 
@@ -46,4 +46,32 @@ module.exports.scrape = async url => {
   console.error(status);
 
   return null;
+};
+
+//Scrape all links on the welcome page of the website
+module.exports.scrape_links = async url => {
+  const response = await axios(url);
+  const {data, status} = response;
+
+  if (status >= 200 && status < 300) {
+    return parse_links(data);
+  }
+
+  console.error(status);
+
+  return null;
+};
+
+const parse_links = data => {
+  const $ = cheerio.load(data);
+
+  return $('.header-navigation--primary .header-nav-list-item')
+    .map((i, element) => {
+      const link = $(element)
+        .find('.header-nav-list-item > a[href]')
+        .attr('href')
+
+      return link;
+    })
+    .get();
 };
