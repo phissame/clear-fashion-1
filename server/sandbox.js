@@ -6,34 +6,37 @@ const adresseparis = require('./sources/adresseparis');
 const eshops = ['https://www.dedicatedbrand.com'];
 eshops.push('https://mudjeans.eu/');
 eshops.push('https://adresse.paris/');
-const mongoose = require('mongoose')
+const {MongoClient} = require('mongodb');
+const MONGODB_URI = "mongodb+srv://dbUser:Buzenval1998@clear-fashion.jifhj.mongodb.net/retryWrites=true&w=majority";
+const MONGODB_DB_NAME = 'clearfashion';
 
-const url = "mongodb+srv://dbUser:Buzenval1998@cluster0.jifhj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-
-const connectionParams={
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true 
-}
-mongoose.connect(url,connectionParams)
-    .then( () => {
-        console.log('Connected to database ')
-    })
-    .catch( (err) => {
-        console.error(`Error connecting to the database. \n${err}`);
-    })
 
 async function sandbox () {
-  let allproducts = []
-  dedicated_product = await dedicated_scrapping(eshops[0]);
-  mudjeans_product= await mudjeans_scrapping(eshops[1]);
-  allproducts = dedicated_product.concat(mudjeans_product)
-  //await adresseparis_scrapping(eshops[2]);
-  const mongocluster=new mongo(MONGODB_URI, MONGODB_DB_NAME);
-  console.log("Products scrapped, storing in the database");
-  await mongocluster.insert(allproducts);
-  await mongocluster.close();
-  process.exit(0);
+  try {
+    dedicated_products = await dedicated_scrapping(eshops[0]);
+    mudjeans_products = await mudjeans_scrapping(eshops[1]);
+
+    let allproducts = []
+    allproducts = dedicated_products.concat(mudjeans_products);
+
+    //console.log(allproducts);
+
+    const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
+    const db = client.db(MONGODB_DB_NAME)
+    const collection = db.collection('products');
+    const result = await collection.insertMany(allproducts);
+    console.log(result);
+
+    //await adresseparis_scrapping(eshops[2]);
+
+
+
+    console.log('All scrapping done');
+    process.exit(0);
+  }
+  catch(error){
+    console.error(error)
+  }
 }
 async function dedicated_scrapping(eshop, brand = 'DEDICATED') {
   try {
