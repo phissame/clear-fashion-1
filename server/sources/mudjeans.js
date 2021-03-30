@@ -1,16 +1,20 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-
+const {'v5': uuidv5} = require('uuid');
 /**
  * Parse webpage e-shop
  * @param  {String} data - html response
  * @return {Array} products
  */
-const parse = data => {
+ const parse = data => {
   const $ = cheerio.load(data);
 
-  return $('.product-link .product-meta')
+  return $('.product-link')
     .map((i, element) => {
+      const link = `https://mudjeans.eu${$(element)
+        .find('.product-title a')
+        .attr('href')}`;
+      const brand = "Mudjeans"
       const name = $(element)
         .find('.product-title')
         .text()
@@ -22,10 +26,13 @@ const parse = data => {
           .first()
           .text()
           .replace(/\s|(Buy)|€/g, '')
-          .replace(/,/g, '.')
-      );
+          .replace(/,/g, '.'));
+      const photo = $(element)
+        .find('.primary-image img')
+        .attr('src');
+      const id = uuidv5(link, uuidv5.URL);
 
-      return {name, price};
+      return {id, brand, name, price, photo, link};
     })
     .get();
 };
