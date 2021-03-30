@@ -30,6 +30,28 @@ app.get('/products/:id',async (request,response)=>{
     response.send({"res":"id not found"});
   }
 })
+app.get('/products', async (req, res) => {
+  //response.send({'a': true});
+  let page = parseInt(req.query.page);
+  let size = parseInt(req.query.size);
+  let start = (size*(page-1));
+  console.log("start= "+start);
+  console.log("end=" +start + size);
+  let prod = []
+  let counter = 0;
+  const result = await db.querydata({"price":{$ne:Number("Nan")}})
 
+  for(i=start;i<start+size;i++){
+      if(result[i] != null){
+        console.log(i+' '+result[i].price)
+        prod.push(result[i])
+        counter++;
+
+      }
+
+    }
+  console.log(counter);
+  res.send({"success":true,"data":{"result":prod,"meta":{"currentPage":page,"pageCount":Math.round(result.length/size),"pageSize":size,"count":result.length}}});
+});
 app.listen(PORT);
 console.log(`📡 Running on port ${PORT}`);

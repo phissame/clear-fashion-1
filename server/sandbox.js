@@ -14,10 +14,10 @@ const MONGODB_DB_NAME = 'clearfashion';
 async function sandbox () {
   try {
     dedicated_products = await dedicated_scrapping(eshops[0]);
-    mudjeans_products = await mudjeans_scrapping(eshops[1]);
+   // mudjeans_products = await mudjeans_scrapping(eshops[1]);
 
     let allproducts = []
-    allproducts = dedicated_products.concat(mudjeans_products);
+    allproducts = dedicated_products;
 
     //console.log(allproducts);
 
